@@ -234,6 +234,16 @@ export const buildCliConfig = (options: CliOptions): RepomixConfigCli => {
     };
   }
 
+  if (options.addAiAnalysis) {
+    cliConfig.output = {
+      ...cliConfig.output,
+      aiAnalysis: {
+        ...cliConfig.output?.aiAnalysis,
+        enabled: true,
+      },
+    };
+  }
+
   try {
     return repomixConfigCliSchema.parse(cliConfig);
   } catch (error) {

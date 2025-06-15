@@ -1,5 +1,6 @@
 import type { RepomixConfigMerged } from '../config/configSchema.js';
 import type { RepomixProgressCallback } from '../shared/types.js';
+import { addAiAnalysisToFiles } from './ai/aiFileAnalysis.js';
 import { collectFiles } from './file/fileCollect.js';
 import { sortPaths } from './file/filePathSort.js';
 import { processFiles } from './file/fileProcess.js';
@@ -37,12 +38,13 @@ const defaultDeps = {
   calculateMetrics,
   sortPaths,
   getGitDiffs,
+  addAiAnalysisToFiles,
 };
 
 export const pack = async (
   rootDirs: string[],
   config: RepomixConfigMerged,
-  progressCallback: RepomixProgressCallback = () => {},
+  progressCallback: RepomixProgressCallback = () => { },
   overrideDeps: Partial<typeof defaultDeps> = {},
 ): Promise<PackResult> => {
   const deps = {
@@ -92,22 +94,25 @@ export const pack = async (
   progressCallback('Processing files...');
   const processedFiles = await deps.processFiles(safeRawFiles, config, progressCallback);
 
+  // Add AI analysis if enabled
+  const filesWithAnalysis = await deps.addAiAnalysisToFiles(processedFiles, rootDirs, config, progressCallback);
+
   progressCallback('Generating output...');
-  const output = await deps.generateOutput(rootDirs, config, processedFiles, safeFilePaths, gitDiffResult);
+  const output = await deps.generateOutput(rootDirs, config, filesWithAnalysis, safeFilePaths, gitDiffResult);
 
   progressCallback('Writing output file...');
   await deps.handleOutput(output, config);
 
   await deps.copyToClipboardIfEnabled(output, progressCallback, config);
 
-  const metrics = await deps.calculateMetrics(processedFiles, output, progressCallback, config, gitDiffResult);
+  const metrics = await deps.calculateMetrics(filesWithAnalysis, output, progressCallback, config, gitDiffResult);
 
   // Create a result object that includes metrics and security results
   const result = {
     ...metrics,
     suspiciousFilesResults,
     suspiciousGitDiffResults,
-    processedFiles,
+    processedFiles: filesWithAnalysis,
     safeFilePaths,
   };
 

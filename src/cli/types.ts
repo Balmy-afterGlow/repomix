@@ -23,6 +23,7 @@ export interface CliOptions extends OptionValues {
   includeEmptyDirectories?: boolean;
   gitSortByChanges?: boolean;
   includeDiffs?: boolean;
+  addAiAnalysis?: boolean;
 
   // Filter Options
   include?: string;

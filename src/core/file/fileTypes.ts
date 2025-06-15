@@ -6,4 +6,5 @@ export interface RawFile {
 export interface ProcessedFile {
   path: string;
   content: string;
+  aiAnalysis?: string;
 }

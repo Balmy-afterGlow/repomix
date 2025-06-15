@@ -74,6 +74,7 @@ export const run = async () => {
         '--include-diffs',
         'include git diffs in the output (includes both work tree and staged changes separately)',
       )
+      .option('--add-ai-analysis', 'add AI analysis of file change history to the output')
       // Filter Options
       .optionsGroup('Filter Options')
       .option('--include <patterns>', 'list of include patterns (comma-separated)')

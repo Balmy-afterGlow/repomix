@@ -44,6 +44,18 @@ export const repomixConfigBaseSchema = z.object({
           includeDiffs: z.boolean().optional(),
         })
         .optional(),
+      aiAnalysis: z
+        .object({
+          enabled: z.boolean().optional(),
+          maxCommits: z.number().optional(),
+          apiKey: z.string().optional(),
+          baseURL: z.string().optional(),
+          model: z.string().optional(),
+          batchSize: z.number().optional(),
+          delayBetweenBatches: z.number().optional(),
+          maxRetries: z.number().optional(),
+        })
+        .optional(),
     })
     .optional(),
   include: z.array(z.string()).optional(),
@@ -99,6 +111,18 @@ export const repomixConfigDefaultSchema = z.object({
           sortByChanges: z.boolean().default(true),
           sortByChangesMaxCommits: z.number().int().min(1).default(100),
           includeDiffs: z.boolean().default(false),
+        })
+        .default({}),
+      aiAnalysis: z
+        .object({
+          enabled: z.boolean().default(false),
+          maxCommits: z.number().int().min(1).default(5), // Reduce default from 10 to 5
+          apiKey: z.string().optional(),
+          baseURL: z.string().default('https://api.deepseek.com/v1'),
+          model: z.string().default('deepseek-chat'),
+          batchSize: z.number().int().min(1).default(3), // Small batch size for rate limiting
+          delayBetweenBatches: z.number().int().min(0).default(2000), // 2 second delay
+          maxRetries: z.number().int().min(0).default(2), // Reduce retries
         })
         .default({}),
     })

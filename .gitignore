@@ -42,3 +42,6 @@ repomix-output.md
 # private files
 .cursor/rules/
 .github/todo.md
+
+# env
+.env

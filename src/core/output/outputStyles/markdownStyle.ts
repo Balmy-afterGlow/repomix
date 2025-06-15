@@ -44,6 +44,13 @@ export const getMarkdownTemplate = () => {
 {{{this.content}}}
 {{{../markdownCodeBlockDelimiter}}}
 
+{{#if this.aiAnalysis}}
+### AI Analysis
+\`\`\`plaintext
+{{{this.aiAnalysis}}}
+\`\`\`
+
+{{/if}}
 {{/each}}
 {{/if}}
 
